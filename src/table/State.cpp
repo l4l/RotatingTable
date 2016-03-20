@@ -19,10 +19,12 @@ State::~State() {
     delete[] field;
 }
 
-// Just copy everything
 State::State(const State& st) : State(st.width, st.height) {
     balls = st.balls; 
     holes = st.holes;
+    for (int i = 0; i < width; ++i) {
+        memcpy(field[i], st.field[i], height);
+    }
 }
 
 std::unique_ptr<State> State::move(Movement m) const {
