@@ -54,9 +54,18 @@ private:
     bool check(const dot&) const;
     // Set the obstacle by given pair of dots
     void setObstacle(int32_t, int32_t, int32_t, int32_t);
+    // Move ball to new position
+    void moveBall(const dot&, const dot&);
+    // Remove pair ball&hole from hole if elements have same id
+    // Return true if removed 
+    bool destroyPair(const dot &ball, const dot &hole);
+    // True when moved to the edge and edge not parallel to isVert
+    bool atEdge(const dot&, bool isVert) const;
+    // True when out of the field
+    bool isOut(const dot&) const;
 
     // Perform movement of one object of the state
-    static void move(Movement, std::unique_ptr<State>&, const dot&);
+    static void move(Movement, std::unique_ptr<State>&, const dot);
 };
 
 
