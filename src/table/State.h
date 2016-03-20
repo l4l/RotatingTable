@@ -34,7 +34,7 @@ public:
     ~State();
     explicit State(const State&);
 
-    // Perform rotation of the table
+    // Perform movement of the state
     std::unique_ptr<State> move(Movement) const;
 
     void addBall(const dot&);
@@ -43,15 +43,19 @@ public:
 private:
     matrix field;
 
-    // Pair of dots, where first points to the ball, second to the hole -> index
+    // Balls position -> ID
     std::map<dot, int> balls;
+    // Holes position -> ID
     std::map<dot, int> holes;
 
     const int32_t width, height;
 
-    void check(const dot&) const;
+    // Check the dot business on the field 
+    bool check(const dot&) const;
+    // Set the obstacle by given pair of dots
     void setObstacle(int32_t, int32_t, int32_t, int32_t);
 
+    // Perform movement of one object of the state
     static void move(Movement, std::unique_ptr<State>&, const dot&);
 };
 

@@ -34,16 +34,16 @@ std::unique_ptr<State> State::move(Movement m) const {
 }
 
 void State::addBall(const dot& ball) {
-    check(ball);
-    field[ball.first][ball.second] |= BALL;
+    if (check(ball)) throw "Tried to replace object by ball";
 
+    field[ball.first][ball.second] |= BALL;
     balls[ball] = balls.size();
 }
 
 void State::addHole(const dot& hole) {
-    check(hole);
+    if (check(hole)) throw "Tried to replace object by hole";
+
     field[hole.first][hole.second] |= HOLE;
-    
     holes[hole] = holes.size();
 }
 
@@ -56,16 +56,18 @@ void State::addObstacle(const dot_pair& e) {
     setObstacle(x0, y0, x1, y1);
 }
 
-void State::check(const dot& d) const {
+bool State::check(const dot& d) const {
     auto f = field[d.first][d.second];
     if (BALL == f || HOLE == f)
-        throw "Tried to replace object";
+        return false;
+    return true;
 }
 
 void State::setObstacle(int32_t x0, int32_t y0, int32_t x1, int32_t y1) {
     bool isVert = (x0 == x1);
     if (!isVert) isVert = (y0 == y1);
 
+    // In case that given pair of dots are not near
     if (!isVert) throw "Wrong obstacle";
     
     auto t1 = isVert ? OBST_DOWN : OBST_LEFT;
