@@ -1,3 +1,5 @@
+#include <memory.h>
+
 #include "State.h"
 
 State::State(int32_t size) : State(size, size) { }
@@ -6,6 +8,7 @@ State::State(int32_t w, int32_t h) : width(w), height(h) {
     field = new int32_t*[width];
     for (int i = 0; i < width; ++i) {
         field[i] = new int32_t[height];
+        memset(field, NONE, height);
     }
 }
 
