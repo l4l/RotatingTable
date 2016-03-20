@@ -6,6 +6,19 @@
 #include <memory>
 #include <stdint.h>
 
+/*
+
+x
+^
+|    N 
+|    |
+| W--+--E
+|    |
+|    S
++--------->y
+
+*/
+
 enum Movement {
     NORTH,
     EAST,
@@ -40,6 +53,10 @@ public:
     void addBall(const dot&);
     void addHole(const dot&);
     void addObstacle(const dot_pair&);
+
+    const int32_t* const* getField() { return field; }
+    int32_t w() { return width; }
+    int32_t h() { return height; }
 private:
     matrix field;
 
@@ -65,6 +82,7 @@ private:
     bool isOut(const dot&) const;
 
     // Perform movement of one object of the state
+    // TODO: make movement by entire line
     static void move(Movement, std::unique_ptr<State>&, const dot);
 };
 

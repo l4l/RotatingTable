@@ -57,7 +57,9 @@ State::State(const State& st) : State(st.width, st.height) {
 std::unique_ptr<State> State::move(Movement m) const {
     std::unique_ptr<State> st(new State(*this));
 
-    for (auto &k: st->balls) {
+    const auto balls = st->balls;
+
+    for (auto &k: balls) {
         State::move(m, st, k.first);
     }
 
@@ -141,7 +143,8 @@ bool State::atEdge(const dot &d, bool isVert) const {
 }
 
 bool State::isOut(const dot &d) const {
-    return d.first < 0 || d.second < 0 || d.first >= width || d.second >= height;
+    return d.first < 0 || d.second < 0 || 
+            d.first >= width || d.second >= height;
 }
 
 void State::move(Movement m, std::unique_ptr<State> &st, const dot d) {
@@ -173,5 +176,6 @@ void State::move(Movement m, std::unique_ptr<State> &st, const dot d) {
         // TODO: check for obstacles
     } while (!st->atEdge(final, is_horizontal(m)));
 
+    // if didn't meet any hole, should move the ball
     st->moveBall(d, final);
 }
