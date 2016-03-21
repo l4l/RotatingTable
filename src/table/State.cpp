@@ -24,6 +24,16 @@ constexpr int32_t get_dy(Movement m) {
     return NORTH == m ? -1 : 1;
 }
 
+constexpr Cell getBorder(Movement m) {
+    switch (m) {
+        case NORTH: return OBST_UP;
+        case EAST: return OBST_RIGHT;
+        case SOUTH: return OBST_DOWN;
+        case WEST: return OBST_LEFT;
+    }
+    return NONE;
+}
+
 inline void move_dot(dot &d, int32_t dx, int32_t dy) {
     d.first += dx;
     d.second += dy;
@@ -97,7 +107,7 @@ bool State::check(const dot& d) const {
 void State::setObstacle(int32_t x0, int32_t y0, int32_t x1, int32_t y1) {
     bool isVert = (x0 == x1);
     // In case that given pair of dots are not near
-    if (!isVert && y0 == y1) throw "Wrong obstacle";
+    if (!isVert && y0 != y1) throw "Wrong obstacle";
 
     auto t1 = isVert ? OBST_DOWN : OBST_LEFT;
     auto t2 = isVert ? OBST_UP : OBST_RIGHT;
@@ -105,15 +115,17 @@ void State::setObstacle(int32_t x0, int32_t y0, int32_t x1, int32_t y1) {
     bool upper = isVert ? (y0 > y1) : (x0 > x1);
 
     if (upper) {
-        field[x0][y0] |= t2;
-        field[x1][y1] |= t1;
+        field[x0][y0] |= isVert ? t2 : t1;
+        field[x1][y1] |= isVert ? t1 : t2;
     } else {
-        field[x0][y0] |= t1;
-        field[x1][y1] |= t2;
+        field[x0][y0] |= isVert ? t1 : t2;
+        field[x1][y1] |= isVert ? t2 : t1;
     }
 }
 
 void State::moveBall(const dot &old, const dot &n) {
+    if (old == n) return;
+
     auto id = balls.at(old);
     balls.erase(old);
     balls.insert(std::make_pair(n, id));
@@ -151,10 +163,15 @@ void State::move(Movement m, std::unique_ptr<State> &st, const dot d) {
     const int32_t dx = get_dx(m);
     const int32_t dy = get_dy(m);
 
+    const auto border = getBorder(m);
+
     dot final = d;
 
     // we don't need to check initial position
     do {
+
+        if (st->field[final.first][final.second] & border) break;
+
         move_dot(final, dx, dy);
         if (st->isOut(final)) return;
 
