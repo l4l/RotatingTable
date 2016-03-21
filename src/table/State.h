@@ -36,9 +36,12 @@ enum Cell {
     OBST_DOWN = 32
 };
 
+class State;
+
 typedef std::pair<int32_t, int32_t> dot;
 typedef std::pair<dot, dot> dot_pair;
 typedef int32_t** matrix;
+typedef std::unique_ptr<State> sptr;
 
 class State {
 public:
@@ -48,15 +51,15 @@ public:
     explicit State(const State&);
 
     // Perform movement of the state
-    std::unique_ptr<State> move(Movement) const;
+    sptr move(Movement) const;
 
     void addBall(const dot&);
     void addHole(const dot&);
     void addObstacle(const dot_pair&);
 
-    const int32_t* const* getField() { return field; }
-    int32_t w() { return width; }
-    int32_t h() { return height; }
+    const int32_t* const* getField() const { return field; }
+    int32_t w() const { return width; }
+    int32_t h() const { return height; }
 private:
     matrix field;
 
@@ -83,7 +86,7 @@ private:
 
     // Perform movement of one object of the state
     // TODO: make movement by entire line
-    static void move(Movement, std::unique_ptr<State>&, const dot);
+    static void move(Movement, sptr&, const dot);
 };
 
 

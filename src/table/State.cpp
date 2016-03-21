@@ -64,8 +64,8 @@ State::State(const State& st) : State(st.width, st.height) {
     }
 }
 
-std::unique_ptr<State> State::move(Movement m) const {
-    std::unique_ptr<State> st(new State(*this));
+sptr State::move(Movement m) const {
+    sptr st(new State(*this));
 
     const auto balls = st->balls;
 
@@ -159,7 +159,7 @@ bool State::isOut(const dot &d) const {
             d.first >= width || d.second >= height;
 }
 
-void State::move(Movement m, std::unique_ptr<State> &st, const dot d) {
+void State::move(Movement m, sptr &st, const dot d) {
     const int32_t dx = get_dx(m);
     const int32_t dy = get_dy(m);
 
@@ -184,7 +184,7 @@ void State::move(Movement m, std::unique_ptr<State> &st, const dot d) {
 
         if (HOLE & cell) {
             if (!st->destroyPair(d, final)) {
-                st = std::unique_ptr<State>();
+                st = sptr();
             }
 
             return;
