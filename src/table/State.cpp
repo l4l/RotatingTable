@@ -76,6 +76,10 @@ sptr State::move(Movement m) const {
     return st;
 }
 
+bool State::isEmpty() const {
+    return balls.size() || holes.size();
+}
+
 void State::addBall(const dot& ball) {
     if (!check(ball)) throw "Tried to replace object by ball";
 

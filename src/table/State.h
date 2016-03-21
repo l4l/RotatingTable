@@ -52,6 +52,8 @@ public:
 
     // Perform movement of the state
     sptr move(Movement) const;
+    // Check is there at least one ball or hole
+    bool isEmpty() const;
 
     void addBall(const dot&);
     void addHole(const dot&);
