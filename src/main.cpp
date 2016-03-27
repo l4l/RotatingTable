@@ -6,6 +6,8 @@
 
 #include "State.h"
 
+static const int32_t MAX_DEPTH = 10000;
+
 constexpr const char* to_string(Movement m) {
     switch (m) {
         case NORTH: return "N";
@@ -36,8 +38,7 @@ void bfs(const State &st, states &result) {
 
     state s = std::make_pair("", std::move(ptr));
 
-    int maxDepth = 12345;
-
+    int sz = 0, depth = 0;
     do {
         if (!s.second->isEmpty()) break;
 
@@ -47,7 +48,11 @@ void bfs(const State &st, states &result) {
 
         s = std::move(queue.front());
         queue.pop();
-    } while (queue.size() && maxDepth--);
+        if (s.first.size() > sz) {
+            sz = s.first.size();
+            depth--;
+        }
+    } while (queue.size() && depth < MAX_DEPTH);
 
 
     result.push_back(std::move(s));
