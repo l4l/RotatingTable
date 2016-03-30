@@ -50,23 +50,21 @@ void bfs(const State &st, states &result) {
         queue.pop();
         if (s.first.size() > sz) {
             sz = s.first.size();
-            depth--;
+            depth++;
         }
     } while (queue.size() && depth < MAX_DEPTH);
 
 
-    result.push_back(std::move(s));
     const auto len = s.first.size();
+    result.push_back(std::move(s));
 
     while (queue.size()) {
         auto v = std::move(queue.front());
         queue.pop();
 
-        if (len == v.first.size()) {
-            result.push_back(std::move(s));
-        } else {
-            break;
-        }
+        if (len != v.first.size()) break;
+        if (!v.second.get()) continue;
+        if (!v.second->isEmpty()) result.push_back(std::move(v));
     }
 }
 
@@ -98,12 +96,12 @@ int main() {
     states s;
     try {
         bfs(st, s);
-    } catch (char* s) {
+    } catch (const char* s) {
         printf("Error: %s", s);
         exit(-1);
     }
     for (auto i = s.begin(); i != s.end(); ++i) {
         // print(*i->second);
-        std::cout<<i->first;
+        std::cout<<i->first<<std::endl;
     }
 }
