@@ -78,26 +78,30 @@ int main() {
     for (int i = 0; i < k; ++i) {
         int32_t a, b;
         std::cin>>a>>b;
-        st.addBall(std::make_pair(a, b));
+        st.addBall(std::make_pair(a-1, b-1));
     }
 
     for (int i = 0; i < k; ++i) {
         int32_t a, b;
         std::cin>>a>>b;
-        st.addHole(std::make_pair(a, b));
+        st.addHole(std::make_pair(a-1, b-1));
     }
 
     for (int i = 0; i < m; ++i) {
         int32_t a, b, c, d;
         std::cin>>a>>b>>c>>d;
-        st.addObstacle(std::make_pair(std::make_pair(a, b), std::make_pair(c, d)));
+        st.addObstacle(std::make_pair(std::make_pair(a-1, b-1), std::make_pair(c-1, d-1)));
     }
 
     // print(st);
 
     states s;
-    bfs(st, s);
-
+    try {
+        bfs(st, s);
+    } catch (char* s) {
+        printf("Error: %s", s);
+        exit(-1);
+    }
     for (auto i = s.begin(); i != s.end(); ++i) {
         // print(*i->second);
         std::cout<<i->first;
